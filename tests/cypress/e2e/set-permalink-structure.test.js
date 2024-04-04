@@ -48,7 +48,7 @@ describe('Command: setPermalinkStructure', () => {
   });
 
   after(() => {
-    // Set permalinks back to plain
-    cy.setPermalinkStructure('');
+    // Restore default permalink structure.
+    cy.setPermalinkStructure('/%postname%/');
   });
 });
