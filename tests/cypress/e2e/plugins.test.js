@@ -1,3 +1,5 @@
+import { compare } from 'compare-versions';
+
 describe('Plugins commands', () => {
   beforeEach(() => {
     cy.login();
@@ -7,6 +9,24 @@ describe('Plugins commands', () => {
     cy.activateAllPlugins();
     cy.visit('/wp-admin/plugins.php');
     cy.get('body').then($body => {
+      const winAmpMinimumVersion = '6.1';
+
+      if (
+        compare(
+          Cypress.env('WORDPRESS_CORE').toString(),
+          winAmpMinimumVersion,
+          '<'
+        )
+      ) {
+        // WinAmp block is not expected to activate.
+        assert.equal(
+          $body.find('#the-list tr.inactive').length,
+          1,
+          'Only WinAmp plugin is inactive as it is unsupported.'
+        );
+        return;
+      }
+
       assert.equal(
         $body.find('#the-list tr.inactive').length,
         0,

@@ -16,22 +16,28 @@
  * ```
  */
 export const openDocumentSettingsSidebar = (tab = 'Post'): void => {
-  // Open the sidebar if it is collapsed
-  const button =
-    '.edit-post-header__settings button[aria-label="Settings"][aria-expanded="false"]';
   cy.get('body').then($body => {
-    if ($body.find(button).length > 0) {
-      cy.get(button).click();
-    }
-  });
+    const $settingButtonIds = [
+      'button[aria-expanded="false"][aria-label="Settings"]',
+    ];
 
-  // Click the tab
-  cy.get('body').then($body => {
-    let tabSelector = `.edit-post-sidebar__panel-tab[data-label="${tab}"]`;
-    if ($body.find(tabSelector).length === 0) {
-      // Tab name for WordPress 5.2 is "Document" regardless of the post type
-      tabSelector = '.edit-post-sidebar__panel-tab[data-label="Document"]';
-    }
-    cy.get(tabSelector).click();
+    $settingButtonIds.forEach($settingButtonId => {
+      if ($body.find($settingButtonId).length) {
+        cy.get($settingButtonId).click();
+        cy.wrap($body.find($settingButtonId)).as('sidebarButton');
+      }
+    });
+
+    const $tabSelectors = [
+      `div[role="tablist"] button:contains("${tab}")`,
+      `.edit-post-sidebar__panel-tabs button:contains("${tab}")`,
+    ];
+
+    $tabSelectors.forEach($tabSelector => {
+      if ($body.find($tabSelector).length) {
+        cy.get($tabSelector).click();
+        cy.wrap($body.find($tabSelector)).as('selectedTab');
+      }
+    });
   });
 };
