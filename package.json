@@ -1,6 +1,6 @@
 {
   "name": "@10up/cypress-wp-utils",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Cypress command utilities for testing WordPress",
   "main": "./lib/index.js",
   "files": [
