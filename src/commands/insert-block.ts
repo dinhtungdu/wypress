@@ -16,120 +16,107 @@ import { getIframe } from '../functions/get-iframe';
  * ```
  */
 export const insertBlock = (type: string, name?: string): void => {
-  // replace first occurence only to keep sub-blocks work
-  let slug = type.replace('/', '-');
+  const [namespace = '', ...blockNameRest] = type.split('/');
+  let blockNames = [
+    blockNameRest.join('/').replace('/', '-'),
+    blockNameRest.join('/').replace('/', '\\/'),
+  ];
 
-  // Remove core blocks prefix
-  slug = slug.replace(/^core-/, '');
+  blockNames = blockNames.filter((x, i, a) => a.indexOf(x) == i);
+  // let blockName = blockNameRest.join('/').replace( '/', '\\/' );
 
-  // old gutenberg selector
-  const slugAlt = slug.replace(/\//, '-');
+  let inserterBtn: Cypress.Chainable<JQuery<HTMLElement>>;
+  let search = '';
 
-  // Escape "/" to allow selectors for sub-blocks
-  slug = slug.replace(/\//, '\\/');
-
-  let search;
-  if (name) {
+  if (typeof name === 'string' && name.length) {
     search = name;
   } else {
-    search = type.split('/').pop();
-    if ('undefined' === typeof search) {
-      search = type;
-    }
+    search = type;
   }
 
-  // Remove block patterns
-  /* eslint-disable */
-  let patterns: any[] = [];
-  let settings: any = {};
-  cy.window().then(win => {
-    settings = win.wp.data.select('core/block-editor').getSettings();
-    patterns = settings?.__experimentalBlockPatterns || [];
-    if (patterns.length > 0) {
-      settings.__experimentalBlockPatterns = [];
-    }
-  });
-
-  cy.wait(500);
-  /* eslint-enable */
-
-  // Open blocks panel
-  cy.get(
-    '.edit-post-header-toolbar__inserter-toggle, .edit-post-header-toolbar .block-editor-inserter__toggle'
-  ).click();
-
-  cy.get('.block-editor-inserter__search')
-    .click()
-    .type(search)
-    .type('{enter}', { delay: 500 });
-
-  // Insert the block
-  cy.get(`.editor-block-list-item-${slug}, .editor-block-list-item-${slugAlt}`)
-    .first()
-    .click();
-
-  // Close blocks panel
+  // Start of block inserter toggle button click logic.
   cy.get('body').then($body => {
-    if (
-      $body.find('.edit-post-header-toolbar__inserter-toggle.is-pressed')
-        .length > 0
-    ) {
-      cy.get('.edit-post-header-toolbar__inserter-toggle.is-pressed').click();
-    }
-  });
+    const selectors = [
+      'button[aria-label="Add block"]', // 5.7
+      'button[aria-label="Toggle block inserter"]', // 6.4
+    ];
 
-  // Add patterns back
-  if (patterns.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    settings.__experimentalBlockPatterns = patterns;
-  }
-
-  // Remove tailing suffix of sub-blocks
-  const blockType = type.replace(/^(.*?)\/(.*?)\/[^/]+$/, '$1/$2');
-
-  const blockTypeAlt = type.replace('/', '-');
-
-  // Get last block of the current type
-  // Pull from the iframe editor first, if it exists
-  cy.get('body').then($body => {
-    if ($body.find('iframe[name="editor-canvas"]').length) {
-      getIframe('iframe[name="editor-canvas"]').then($iframe => {
-        if ($iframe.find(`.wp-block[data-type="${blockType}"]`).length > 0) {
-          getIframe('iframe[name="editor-canvas"]')
-            .find(`.wp-block[data-type="${blockType}"]`)
-            .last()
-            .then(block => {
-              const id = block.prop('id');
-              cy.wrap(id);
-            });
-        } else if (
-          $iframe.find(`.wp-block[data-type="${blockTypeAlt}"]`).length
-        ) {
-          getIframe('iframe[name="editor-canvas"]')
-            .find(`.wp-block[data-type="${blockTypeAlt}"]`)
-            .last()
-            .then(block => {
-              const id = block.prop('id');
-              cy.wrap(id);
-            });
-        }
-      });
-    } else {
-      if ($body.find(`.wp-block[data-type="${blockType}"]`).length > 0) {
-        cy.get(`.wp-block[data-type="${blockType}"]`)
-          .last()
-          .then(block => {
-            const id = block.prop('id');
-            cy.wrap(id);
-          });
-      } else if ($body.find(`.wp-block[data-type="${blockTypeAlt}"]`)) {
-        cy.get(`.wp-block[data-type="${blockTypeAlt}"]`)
-          .last()
-          .then(block => {
-            const id = block.prop('id');
-            cy.wrap(id);
-          });
+    selectors.forEach(selector => {
+      if ($body.find(selector).length) {
+        cy.get(selector).then($button => {
+          if ($button.length) {
+            inserterBtn = cy.wrap($button);
+            inserterBtn.first().click();
+          }
+        });
       }
+    });
+  });
+  // End of block inserter toggle button click logic.
+
+  // Start of Block tab click logic.
+  cy.get('button[role="tab"]')
+    .contains('Blocks')
+    .then($tab => {
+      if ($tab.length) {
+        cy.wrap($tab).click();
+      }
+    });
+  // End of Block tab click logic.
+
+  // Start of Block search logic.
+  cy.get('input[placeholder="Search"]').then($input => {
+    if ($input.length) {
+      cy.wrap($input).type(search);
     }
+  });
+  // End of Block search logic.
+
+  blockNames.forEach(blockName => {
+    const blockSelector = `.editor-block-list-item-${
+      'core' === namespace ? '' : namespace + '-'
+    }${blockName}`;
+
+    cy.get('body').then($body => {
+      if ($body.find(blockSelector).length) {
+        // Start of Block insertion by click logic.
+        cy.get(blockSelector).then($block => {
+          if ($block.length) {
+            cy.wrap($block).click();
+            inserterBtn.click();
+
+            const [ns, rest] = type.split('/'); // namespace = ns, second namespace or block name = rest
+
+            cy.get('body').then($body => {
+              if ($body.find('iframe[name="editor-canvas"]').length) {
+                // Works with WP 6.4
+                getIframe('iframe[name="editor-canvas"]').then($iframe => {
+                  const blockInIframe = $iframe.find(
+                    `.wp-block[data-type="${ns}/${rest}"]`
+                  );
+                  if (blockInIframe.length > 0) {
+                    expect(blockInIframe.length).to.equal(1);
+                    cy.wrap(blockInIframe.prop('id'));
+                  }
+                });
+              } else if (
+                $body.find(`.wp-block[data-type="${ns}/${rest}"]`).length
+              ) {
+                // Works with WP 5.7
+                cy.get(`.wp-block[data-type="${ns}/${rest}"]`).then(
+                  $blockInEditor => {
+                    expect($blockInEditor.length).to.equal(1);
+                    cy.wrap($blockInEditor.prop('id'));
+                  }
+                );
+              } else {
+                throw new Error(`${ns}/${rest} not found.`);
+              }
+            });
+          }
+        });
+        // End of Block insertion by click logic.
+      }
+    });
   });
 };

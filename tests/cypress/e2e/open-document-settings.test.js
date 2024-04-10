@@ -112,17 +112,11 @@ describe('Commands: openDocumentSettings*', () => {
     cy.openDocumentSettingsSidebar();
 
     cy.get('body').then($body => {
-      let postTabSelector = '.edit-post-sidebar__panel-tab[data-label="Post"]';
-      if (
-        $body.find('.edit-post-sidebar__panel-tab[data-label="Post"]')
-          .length === 0
-      ) {
-        // Post tab name for WordPress 5.2
-        postTabSelector =
-          '.edit-post-sidebar__panel-tab[data-label="Document"]';
+      if ($body.find('div[role="tablist"]').length) {
+        cy.get('@selectedTab').should('have.attr', 'aria-selected', 'true');
+      } else if ($body.find('.edit-post-sidebar__panel-tabs').length) {
+        cy.get('@selectedTab').should('have.class', 'is-active');
       }
-      cy.get(postTabSelector).should('have.class', 'is-active');
-      cy.get('.components-panel .components-panel__body').should('be.visible');
     });
   });
 
@@ -166,12 +160,13 @@ describe('Commands: openDocumentSettings*', () => {
       cy.openDocumentSettingsSidebar('Block');
 
       // Assertions:
-      cy.get('.edit-post-sidebar__panel-tab')
-        .contains('Block')
-        .should('have.class', 'is-active');
-      cy.get(
-        '.components-panel .block-editor-block-inspector, .components-panel .edit-post-settings-sidebar__panel-block'
-      ).should('be.visible');
+      cy.get('body').then($body => {
+        if ($body.find('div[role="tablist"]').length) {
+          cy.get('@selectedTab').should('have.attr', 'aria-selected', 'true');
+        } else if ($body.find('.edit-post-sidebar__panel-tabs').length) {
+          cy.get('@selectedTab').should('have.class', 'is-active');
+        }
+      });
     });
   });
 
@@ -186,20 +181,11 @@ describe('Commands: openDocumentSettings*', () => {
       cy.openDocumentSettingsSidebar('Page');
 
       cy.get('body').then($body => {
-        let postTabSelector =
-          '.edit-post-sidebar__panel-tab[data-label="Page"]';
-        if (
-          $body.find('.edit-post-sidebar__panel-tab[data-label="Page"]')
-            .length === 0
-        ) {
-          // Post tab name for WordPress 5.2
-          postTabSelector =
-            '.edit-post-sidebar__panel-tab[data-label="Document"]';
+        if ($body.find('div[role="tablist"]').length) {
+          cy.get('@selectedTab').should('have.attr', 'aria-selected', 'true');
+        } else if ($body.find('.edit-post-sidebar__panel-tabs').length) {
+          cy.get('@selectedTab').should('have.class', 'is-active');
         }
-        cy.get(postTabSelector).should('have.class', 'is-active');
-        cy.get('.components-panel .components-panel__body').should(
-          'be.visible'
-        );
       });
     });
   });

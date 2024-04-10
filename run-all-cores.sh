@@ -1,6 +1,16 @@
 #!/bin/bash
 
-VERSIONS="5.7 5.8 5.9 6.0 6.1 6.2 master:6.3"
+MAJOR_VERSIONS="5.7 5.8 5.9 6.0 6.1 6.2 6.3 6.4 6.5"
+TRUNK="master:6.6"
+
+VERSIONS=""
+for MAJOR_VERSION in $MAJOR_VERSIONS; do
+	# This ensures the latest patch version is used.
+	VERSIONS="$VERSIONS $MAJOR_VERSION-branch:$MAJOR_VERSION"
+done
+VERSIONS="$TRUNK $VERSIONS"
+
+echo "Running tests for the following core versions: $VERSIONS"
 
 SPEC="-- --quiet"
 

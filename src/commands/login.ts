@@ -17,14 +17,23 @@
  * ```
  */
 export const login = (username = 'admin', password = 'password'): void => {
-  cy.session([username, password], () => {
-    cy.visit('/wp-admin/');
-    cy.get('body').then($body => {
-      if ($body.find('#wpwrap').length == 0) {
-        cy.get('input#user_login').clear();
-        cy.get('input#user_login').click().type(username);
-        cy.get('input#user_pass').type(`${password}{enter}`);
-      }
-    });
-  });
+  cy.session(
+    [username, password],
+    () => {
+      cy.visit('/wp-admin/');
+      cy.get('body').then($body => {
+        if ($body.find('#wpwrap').length == 0) {
+          cy.get('input#user_login').clear();
+          cy.get('input#user_login').click().type(username);
+          cy.get('input#user_pass').type(`${password}{enter}`);
+        }
+      });
+    },
+    {
+      validate() {
+        cy.visit('/wp-admin/profile.php');
+        cy.get('#user_login').should('have.value', username);
+      },
+    }
+  );
 };

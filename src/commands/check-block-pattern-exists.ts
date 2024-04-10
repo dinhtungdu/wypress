@@ -37,6 +37,10 @@ export const checkBlockPatternExists = ({
   title: string;
   categoryValue?: string;
 }): void => {
+  // opening the inserter loads the patterns in WP trunk after 6.4.3.
+  cy.get('button[class*="__inserter-toggle"][aria-pressed="false"]').click();
+  cy.get('button[class*="__inserter-toggle"][aria-pressed="true"]').click();
+
   cy.window()
     .then(win => {
       /* eslint-disable */
@@ -51,22 +55,25 @@ export const checkBlockPatternExists = ({
 
           const { wp } = win;
 
-          const getSettings =
-            wp?.data?.select('core/block-editor')?.getSettings;
-          if (undefined !== getSettings) {
-            const allRegisteredPatterns =
-              getSettings().__experimentalBlockPatterns;
+          let allRegisteredPatterns;
 
-            if (undefined !== allRegisteredPatterns) {
-              for (let i = 0; i < allRegisteredPatterns.length; i++) {
-                if (
-                  title === allRegisteredPatterns[i].title &&
-                  allRegisteredPatterns[i].categories &&
-                  allRegisteredPatterns[i].categories.includes(categoryValue)
-                ) {
-                  resolve(true);
-                  return;
-                }
+          if (wp?.data?.select('core')?.getBlockPatterns) {
+            allRegisteredPatterns = wp.data.select('core').getBlockPatterns();
+          } else {
+            allRegisteredPatterns = wp.data
+              .select('core/block-editor')
+              .getSettings().__experimentalBlockPatterns;
+          }
+
+          if (undefined !== allRegisteredPatterns) {
+            for (let i = 0; i < allRegisteredPatterns.length; i++) {
+              if (
+                title === allRegisteredPatterns[i].title &&
+                allRegisteredPatterns[i].categories &&
+                allRegisteredPatterns[i].categories.includes(categoryValue)
+              ) {
+                resolve(true);
+                return;
               }
             }
           }

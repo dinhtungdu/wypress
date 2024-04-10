@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file, per the [Ke
 
 ## [Unreleased] - TBD
 
+## [0.3.0] - 2024-04-10
+
+### Changed
+
+- Update version numbers in `run-all-cores.sh` script to include latest versions of WP (props [@peterwilsoncc](https://github.com/peterwilsoncc), [@Sidsector9](https://github.com/Sidsector9) via [#122](https://github.com/10up/cypress-wp-utils/pull/122)).
+
+### Fixed
+
+- Validate that the user logged in properly (props [@cadic](https://github.com/cadic), [@darylldoyle](https://github.com/darylldoyle), [@peterwilsoncc](https://github.com/peterwilsoncc) via [#113](https://github.com/10up/cypress-wp-utils/pull/113)).
+- Ensure the publish button isn't disabled before we click it in the `classicCreatePost` command (props [@dkotter](https://github.com/dkotter), [@faisal-alvi](https://github.com/faisal-alvi) via [#116](https://github.com/10up/cypress-wp-utils/pull/116)).
+- Address command failures on the latest versions of WordPress (props [@Sidsector9](https://github.com/Sidsector9), [@peterwilsoncc](https://github.com/peterwilsoncc), [@iamdharmesh](https://github.com/iamdharmesh), [@darylldoyle](https://github.com/darylldoyle) via [#117](https://github.com/10up/cypress-wp-utils/pull/117)).
+- Permalink tests clean up routine (props [@peterwilsoncc](https://github.com/peterwilsoncc), [@dkotter](https://github.com/dkotter) via [#120](https://github.com/10up/cypress-wp-utils/pull/120)).
+
+### Security
+
+- Bump `tj-actions/changed-files` from 37 to 41 (props [@dependabot[bot]](https://github.com/apps/dependabot), [@peterwilsoncc](https://github.com/peterwilsoncc) via [#114](https://github.com/10up/cypress-wp-utils/pull/114)).
+
 ## [0.2.0] - 2023-08-30
 
 ### Added
@@ -30,8 +47,10 @@ All notable changes to this project will be documented in this file, per the [Ke
 - Bump `word-wrap` from 1.2.3 to 1.2.5 (props [@dependabot[bot]](https://github.com/apps/dependabot) via [#107](https://github.com/10up/cypress-wp-utils/pull/107)).
 
 ## [0.1.0] - 2023-03-08
+
 - Initial release.
 
 [Unreleased]: https://github.com/10up/cypress-wp-utils/compare/trunk...develop
+[0.3.0]: https://github.com/10up/cypress-wp-util/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/10up/cypress-wp-util/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/10up/cypress-wp-util/tree/0.1.0

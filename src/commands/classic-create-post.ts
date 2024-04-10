@@ -45,9 +45,9 @@ export const classicCreatePost = ({
   });
 
   if ('draft' === status) {
-    cy.get('#save-post').click();
+    cy.get('#save-post').should('not.have.class', 'disabled').click();
   } else {
-    cy.get('#publish').click();
+    cy.get('#publish').should('not.have.class', 'disabled').click();
   }
 
   cy.wait('@savePost').then(response => {
