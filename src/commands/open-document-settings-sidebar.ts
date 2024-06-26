@@ -23,8 +23,8 @@ export const openDocumentSettingsSidebar = (tab = 'Post'): void => {
 
     $settingButtonIds.forEach($settingButtonId => {
       if ($body.find($settingButtonId).length) {
-        cy.get($settingButtonId).click();
-        cy.wrap($body.find($settingButtonId)).as('sidebarButton');
+        cy.get($settingButtonId).first().click();
+        cy.wrap($body.find($settingButtonId).first()).as('sidebarButton');
       }
     });
 
@@ -35,8 +35,8 @@ export const openDocumentSettingsSidebar = (tab = 'Post'): void => {
 
     $tabSelectors.forEach($tabSelector => {
       if ($body.find($tabSelector).length) {
-        cy.get($tabSelector).click();
-        cy.wrap($body.find($tabSelector)).as('selectedTab');
+        cy.get($tabSelector).first().click();
+        cy.wrap($body.find($tabSelector).first()).as('selectedTab');
       }
     });
   });
