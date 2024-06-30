@@ -70,9 +70,21 @@ export const createPost = ({
   // Close Welcome Guide.
   cy.closeWelcomeGuide();
 
+  // Close Start Page Options.
+  if (postType === 'page') {
+    const modelCloseSelector =
+      '.edit-post-start-page-options__modal button[aria-label="Close"]';
+    cy.get(modelCloseSelector).then($ele => {
+      if ($ele.length > 0) {
+        cy.get(modelCloseSelector).click();
+      }
+    });
+  }
+
   // Fill out data.
   if (title.length > 0) {
-    cy.getBlockEditor().find(titleInput).clear().type(title);
+    cy.getBlockEditor().find(titleInput).clear();
+    cy.getBlockEditor().find(titleInput).type(title);
   }
 
   if (content.length > 0) {
