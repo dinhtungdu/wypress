@@ -72,11 +72,13 @@ export const createPost = ({
 
   // Close Start Page Options.
   if (postType === 'page') {
-    const modelCloseSelector =
+    // eslint-disable-next-line cypress/no-unnecessary-waiting -- Wait for the modal to appear. Didn't find a better way to handle this.
+    cy.wait(500);
+    const modelSelector =
       '.edit-post-start-page-options__modal button[aria-label="Close"]';
-    cy.get(modelCloseSelector).then($ele => {
-      if ($ele.length > 0) {
-        cy.get(modelCloseSelector).click();
+    cy.get('body').then($body => {
+      if ($body.find('.edit-post-start-page-options__modal').length > 0) {
+        cy.get(modelSelector).click();
       }
     });
   }
