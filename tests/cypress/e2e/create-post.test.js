@@ -110,7 +110,12 @@ describe('Command: createPost', () => {
               .find('input[type="checkbox"]')
               .should('be.checked');
           } else {
-            cy.get('.editor-post-sticky__toggle-control').should('be.visible');
+            cy.get(
+              '.editor-post-sticky__toggle-control input[type="checkbox"]'
+            ).check();
+            cy.get(
+              '.editor-post-sticky__toggle-control input[type="checkbox"]'
+            ).should('be.checked');
           }
         });
       },
