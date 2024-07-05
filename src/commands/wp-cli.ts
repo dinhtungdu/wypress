@@ -13,7 +13,7 @@
  * ```
  */
 export const wpCli = (command: string, ignoreFailures = false): void => {
-  const escapedCommand = command.replace(/"/g, '\\"');
+  const escapedCommand = command.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
   const options = {
     failOnNonZeroExit: !ignoreFailures,
   };
