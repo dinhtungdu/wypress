@@ -1,3 +1,4 @@
+import { compare } from 'compare-versions';
 const { randomName } = require('../support/functions');
 import { getIframe } from '../../../lib/functions/get-iframe';
 
@@ -50,15 +51,19 @@ describe('Commands: openDocumentSettings*', () => {
       ) {
         name = 'Summary';
       }
-      cy.openDocumentSettingsPanel(name);
-
-      // Assertion: Stick to the top checkbox should be visible
-      cy.get('.components-panel__body .components-panel__body-title button')
-        .contains(name, { matchCase: false })
-        .then($button => {
-          const $panel = $button.parents('.components-panel__body');
-          cy.wrap($panel).should('contain', 'Stick to the top of the blog');
-        });
+      // WP 6.6 handling.
+      if ($body.find('.editor-post-summary').length === 0) {
+        cy.openDocumentSettingsPanel(name);
+        // Assertion: Stick to the top checkbox should be visible
+        cy.get('.components-panel__body .components-panel__body-title button')
+          .contains(name, { matchCase: false })
+          .then($button => {
+            const $panel = $button.parents('.components-panel__body');
+            cy.wrap($panel).should('contain', 'Stick to the top of the blog');
+          });
+      } else {
+        cy.get('.editor-post-sticky__toggle-control').should('be.visible');
+      }
     });
   });
 
@@ -83,6 +88,11 @@ describe('Commands: openDocumentSettings*', () => {
   });
 
   it('Should be able to open Discussion panel on the existing page', () => {
+    if (compare(Cypress.env('WORDPRESS_CORE').toString(), '6.6', '>=')) {
+      assert(true, 'Skipping test');
+      return;
+    }
+
     cy.createPost({
       title: randomName(),
       postType: 'page',
