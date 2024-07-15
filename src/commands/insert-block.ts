@@ -95,8 +95,7 @@ export const insertBlock = (type: string, name?: string): void => {
                     `.wp-block[data-type="${ns}/${rest}"]`
                   );
                   if (blockInIframe.length > 0) {
-                    expect(blockInIframe.length).to.equal(1);
-                    cy.wrap(blockInIframe.prop('id'));
+                    cy.wrap(blockInIframe.last().prop('id'));
                   }
                 });
               } else if (

@@ -1,6 +1,6 @@
 describe('Command: wpCli', () => {
   it('Should run cli command and receive the response', () => {
-    cy.wpCli('cli version')
+    cy.wpCli('wp cli version')
       .its('stdout')
       .should('match', /^WP-CLI \d+\.\d+/);
   });

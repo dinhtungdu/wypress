@@ -98,15 +98,26 @@ describe('Command: createPost', () => {
           ) {
             name = 'Summary';
           }
-          cy.openDocumentSettingsPanel(name);
-        });
 
-        cy.get('label')
-          .contains('Stick to the top of the blog')
-          .click()
-          .parent()
-          .find('input[type="checkbox"]')
-          .should('be.checked');
+          // WP 6.6 handling.
+          if ($body.find('.editor-post-summary').length === 0) {
+            cy.openDocumentSettingsPanel(name);
+
+            cy.get('label')
+              .contains('Stick to the top of the blog')
+              .click()
+              .parent()
+              .find('input[type="checkbox"]')
+              .should('be.checked');
+          } else {
+            cy.get(
+              '.editor-post-sticky__toggle-control input[type="checkbox"]'
+            ).check();
+            cy.get(
+              '.editor-post-sticky__toggle-control input[type="checkbox"]'
+            ).should('be.checked');
+          }
+        });
       },
     });
 

@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file, per the [Ke
 
 ## [Unreleased] - TBD
 
+## [0.4.0] - 2024-07-15
+
+### Changed
+
+- Bump `actions/upload-artifact` from v3 to v4 (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul) via [#125](https://github.com/10up/cypress-wp-utils/pull/125)).
+
+### Fixed
+
+- Ensure that the `openDocumentSettingsSidebar` command works properly in all cases (props [@aliaghdam](https://github.com/aliaghdam), [@faisal-alvi](https://github.com/faisal-alvi), [@jeffpaul](https://github.com/jeffpaul) via [#127](https://github.com/10up/cypress-wp-utils/pull/127)).
+- Ensure that the `insertBlock` command works properly in all cases (props [@iamdharmesh](https://github.com/iamdharmesh), [@faisal-alvi](https://github.com/faisal-alvi) via [#128](https://github.com/10up/cypress-wp-utils/pull/128)).
+
+### Security
+
+- Bump `braces` from 3.0.2 to 3.0.3 (props [@dependabot[bot]](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#126](https://github.com/10up/cypress-wp-utils/pull/126)).
+
 ## [0.3.0] - 2024-04-10
 
 ### Changed
@@ -51,6 +66,7 @@ All notable changes to this project will be documented in this file, per the [Ke
 - Initial release.
 
 [Unreleased]: https://github.com/10up/cypress-wp-utils/compare/trunk...develop
+[0.4.0]: https://github.com/10up/cypress-wp-util/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/10up/cypress-wp-util/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/10up/cypress-wp-util/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/10up/cypress-wp-util/tree/0.1.0
