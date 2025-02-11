@@ -39,6 +39,7 @@ export const insertBlock = (type: string, name?: string): void => {
     const selectors = [
       'button[aria-label="Add block"]', // 5.7
       'button[aria-label="Toggle block inserter"]', // 6.4
+      'button[aria-label="Block Inserter"]', // 6.8
     ];
 
     selectors.forEach(selector => {
